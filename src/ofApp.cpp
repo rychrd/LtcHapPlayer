@@ -20,7 +20,7 @@ void ofApp::setup(){
     settings.numBuffers = 4;
     settings.setInDevice(devices[6]);
     */
-    snd.setup(this,0,2,48000,256,4); //0 outputs, 2 inputs, sample rate 44100Hz, buffer of 256, nb of buffer 4
+    snd.setup(this,0,2,48000,256,4); //0 outputs, 2 inputs, sample rate, buffer of 256, nb of buffer 4
     
     //Setup a ltc reader by passing a pointer to this ofSoundStream, expected frame rate of ltc = 30
     reader.setup(&snd, 30);
