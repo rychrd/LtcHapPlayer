@@ -51,11 +51,11 @@ void ofApp::update() {
               + reader.ltcFrame();
 
    // totalFrames = static_cast<float>(player.getTotalNumFrames());
-  //  if (ltcFrame >= totalFrames)
- //   {
+    if (ltcFrame >= totalFrames)
+    {
         float modFrame = fmod(ltcFrame, totalFrames);    // stops drift increasing each frame compared to int type
         ltcFrame = floor(modFrame);
- //   }
+    }
     //else 
     {
         //  ltcFrame = 0;
@@ -67,13 +67,17 @@ void ofApp::update() {
     drift = (ltcPos - player.getPosition());
     //   std::cout << drift << endl;
 
-    float speed = player.getSpeed();
+    if (abs(drift) > 0.5)
+    {
+        player.setPosition(ltcFrame);
+    }
 
+    float speed = player.getSpeed();
+    
     // if (player.isFrameNew())
    //  {
     if (abs(drift) > 0.1 && speed == 1)
     {
-        // player.setPosition((ltcPos + 0.01));
         if (signbit(drift))
         {
             player.setSpeed(1 / abs(drift));
