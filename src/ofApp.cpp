@@ -51,11 +51,11 @@ void ofApp::update() {
               + reader.ltcFrame();
 
    // totalFrames = static_cast<float>(player.getTotalNumFrames());
-    if (ltcFrame >= totalFrames)
-    {
+//    if (ltcFrame >= totalFrames)
+//    {
         float modFrame = fmod(ltcFrame, totalFrames);    // stops drift increasing each frame compared to int type
         ltcFrame = floor(modFrame);
-    }
+//    }
     //else 
     {
         //  ltcFrame = 0;
@@ -69,7 +69,7 @@ void ofApp::update() {
 
     if (abs(drift) > 0.5)
     {
-        player.setPosition(ltcFrame);
+        player.setPosition(player.getPosition() + drift);
     }
 
     float speed = player.getSpeed();
@@ -120,9 +120,9 @@ void ofApp::draw(){
     ofDrawBitmapString("frame : " + ofToString(ltcFrame), 20, 70);
     ofDrawBitmapString("total : " + ofToString(player.getTotalNumFrames()), 20, 90);
     ofDrawBitmapString("total resets:" + ofToString(numResets), 20, 110);
-    ofDrawBitmapString("drift:" + ofToString(drift), 20, 130);
+    ofDrawBitmapString("drift:" + ofToString(drift, 6), 20, 130);
     ofDrawBitmapString("speed:" + ofToString(player.getSpeed()), 20, 150);
-    ofDrawBitmapString("player frame:" + ofToString(player.getCurrentFrame()), 20, 170);
+    ofDrawBitmapString("player frame:" + ofToString(player.getPosition()), 20, 170);
     
 }
 //--------------------------------------------------------------
