@@ -12,8 +12,10 @@ class ofApp : public ofBaseApp{
 		void draw();
 		void load(std::string movie);
         void audioIn(float * input, int bufferSize, int nChannels);
+		void keyPressed(int k);
     
 		ofSoundStream snd;
+		ofSoundStreamSettings settings;
 		ofxLtcReader reader;
 		ofxHapPlayer player;
 		ofxHapPlayer player2;
@@ -24,4 +26,5 @@ class ofApp : public ofBaseApp{
 		unsigned int numResets;
 		unsigned long totalFrames;
 		float drift;
+		bool DEBUG;
 };

@@ -5,27 +5,29 @@
 void ofApp::setup(){
     
     //Setup an audio device with ofSoundStream
-    ofSoundStreamSettings settings;
-
     snd.printDeviceList();
-    vector<ofSoundDevice> devices = snd.getDeviceList();
-    snd.setDeviceID(6); // set to local device 
-    /*
-    settings.setApi(ofSoundDevice::Api::MS_DS);
+  //  vector<ofSoundDevice> devices = snd.getDeviceList();
+  
+    settings.setApi(ofSoundDevice::Api::MS_WASAPI);
+   // settings.setInDevice(devices[4]);
+  /* snd.setDeviceID(5); // set to local device 
+   
+   
     settings.setInListener(this);
     settings.sampleRate = 48000;
-    settings.numInputChannels = 2;
+    settings.numInputChannels = 1;
     settings.numOutputChannels = 0;
     settings.bufferSize = 256;
     settings.numBuffers = 4;
-    settings.setInDevice(devices[6]);
     */
-    snd.setup(this, 0, 2, 48000, 256, 4); //outputs, inputs, sample rate, bufSize 256, num bufs
-    
+    snd.setDeviceID(6);
+
+    snd.setup(this, 0, 1, 48000, 1024, 4); //outputs, inputs, sample rate, bufSize 256, num bufs
+  
     //Setup a ltc reader by passing a pointer to this ofSoundStream and FR
     reader.setup(&snd, 30);
 
-    load("video/sample-1080p30-Hap.avi");
+    load("video/Area_4_Window_scaledUp_hap.avi");
     while (!player.isLoaded()) { ; }
 
     totalFrames = player.getTotalNumFrames();
@@ -35,9 +37,12 @@ void ofApp::setup(){
     player.play();
 
     ofSetVerticalSync(true);
+    ofSetFrameRate(30);
     ofSetBackgroundColor(0);
 
+    ofHideCursor();
     numResets = 0;
+    DEBUG = true;
 }
 
 //--------------------------------------------------------------
@@ -74,25 +79,25 @@ void ofApp::update() {
 
     float speed = player.getSpeed();
     
-    // if (player.isFrameNew())
-   //  {
-    if (abs(drift) > 0.1 && speed == 1)
+//    if (player.isFrameNew())
+//     {
+    if (abs(drift) > 0.1 && floor(speed) == 1)
     {
         if (signbit(drift))
         {
-            player.setSpeed(1 / abs(drift));
+            player.setSpeed(1 * abs(drift));
             numResets++;
         }
         else
         {
-            player.setSpeed(1 * abs(drift));
+            player.setSpeed(1 / abs(drift));
         }
     }
     else if (abs(drift <= 0.05) && speed != 1)
     {
         player.setSpeed(1);
     }
-    // }
+ //     }
    
 }
 
@@ -104,26 +109,29 @@ void ofApp::draw(){
     ofRectangle videoRect(0, 0, player.getWidth(), player.getHeight());
     videoRect.scaleTo(ofGetWindowRect());
   //  player.draw(videoRect.x-960, videoRect.y, videoRect.width, videoRect.height);
+  
+    
     player.draw(videoRect.x, videoRect.y, videoRect.width, videoRect.height);
     
 
     //Print ltc values
-    
-    int h = reader.ltcHour();
-    int m = reader.ltcMinute();
-    int s = reader.ltcSecond();
-    int f = reader.ltcFrame();
-    string ltc = ofToString(h,2,'0') + ":" + ofToString(m,2,'0') + ":" + ofToString(s,2,'0') + ":" + ofToString(f,2,'0');
-    ofSetColor(255);
-    ofDrawBitmapString("LTC in : " + ltc, 20, 50);
-    ofDrawBitmapString("fps : " + ofToString(ofGetFrameRate()), 220, 50);
-    ofDrawBitmapString("frame : " + ofToString(ltcFrame), 20, 70);
-    ofDrawBitmapString("total : " + ofToString(player.getTotalNumFrames()), 20, 90);
-    ofDrawBitmapString("total resets:" + ofToString(numResets), 20, 110);
-    ofDrawBitmapString("drift:" + ofToString(drift, 6), 20, 130);
-    ofDrawBitmapString("speed:" + ofToString(player.getSpeed()), 20, 150);
-    ofDrawBitmapString("player frame:" + ofToString(player.getPosition()), 20, 170);
-    
+    if(DEBUG)
+    {
+        int h = reader.ltcHour();
+        int m = reader.ltcMinute();
+        int s = reader.ltcSecond();
+        int f = reader.ltcFrame();
+        string ltc = ofToString(h, 2, '0') + ":" + ofToString(m, 2, '0') + ":" + ofToString(s, 2, '0') + ":" + ofToString(f, 2, '0');
+        ofSetColor(255);
+        ofDrawBitmapString("LTC in : " + ltc, 20, 50);
+        ofDrawBitmapString("fps : " + ofToString(ofGetFrameRate()), 220, 50);
+        ofDrawBitmapString("frame : " + ofToString(ltcFrame), 20, 70);
+        ofDrawBitmapString("total : " + ofToString(player.getTotalNumFrames()), 20, 90);
+        ofDrawBitmapString("total resets:" + ofToString(numResets), 20, 110);
+        ofDrawBitmapString("drift:" + ofToString(drift, 6), 20, 130);
+        ofDrawBitmapString("speed:" + ofToString(player.getSpeed()), 20, 150);
+        ofDrawBitmapString("player frame:" + ofToString(player.getPosition()), 20, 170);
+    }
 }
 //--------------------------------------------------------------
 
@@ -141,3 +149,12 @@ void ofApp::load(std::string movie)
    // player.play();
 
 }
+//--------------------------------------------------------------
+void ofApp::keyPressed(int k)
+{
+   if ((char)k  == 'b')
+    {
+       DEBUG != DEBUG;
+    }
+}
+//--------------------------------------------------------------
