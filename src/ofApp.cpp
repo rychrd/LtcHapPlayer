@@ -4,24 +4,15 @@
 //---------------------------------------------------------
 void ofApp::setup(){
     
-    //Setup an audio device with ofSoundStream
+    //Find XLR to USB audio device - match for USB
     snd.printDeviceList();
-  //  vector<ofSoundDevice> devices = snd.getDeviceList();
+ 
+    const string xlrToUsb = "USB";
+    vector<ofSoundDevice> usbDevice = snd.getMatchingDevices(xlrToUsb);
+    settings.setInDevice(usbDevice[0]);
+    cout << usbDevice[0].name << endl;
   
-    settings.setApi(ofSoundDevice::Api::MS_WASAPI);
-   // settings.setInDevice(devices[4]);
-  /* snd.setDeviceID(5); // set to local device 
-   
-   
-    settings.setInListener(this);
-    settings.sampleRate = 48000;
-    settings.numInputChannels = 1;
-    settings.numOutputChannels = 0;
-    settings.bufferSize = 256;
-    settings.numBuffers = 4;
-    */
-    snd.setDeviceID(6);
-
+    // Setup OfSoundStream
     snd.setup(this, 0, 1, 48000, 1024, 4); //outputs, inputs, sample rate, bufSize 256, num bufs
   
     //Setup a ltc reader by passing a pointer to this ofSoundStream and FR
@@ -42,7 +33,7 @@ void ofApp::setup(){
 
     ofHideCursor();
     numResets = 0;
-    DEBUG = true;
+    DEBUG = FALSE;
 }
 
 //--------------------------------------------------------------
